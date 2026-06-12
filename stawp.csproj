@@ -74,6 +74,7 @@
     <Copy SourceFiles="$(YakReleaseDir)\net48\stawp.gha" DestinationFolder="$(YakRh8Stage)\net48" Condition="'$(BuildYakPackage)' == 'True'" />
     <Copy SourceFiles="$(YakReleaseDir)\net8.0-windows\stawp.gha" DestinationFolder="$(YakRh8Stage)\net8.0-windows" Condition="'$(BuildYakPackage)' == 'True'" />
     <Copy SourceFiles="$(YakReleaseDir)\net48\stawp.gha" DestinationFolder="$(YakRh7Stage)" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Copy SourceFiles="$(YakIcon)" DestinationFiles="$(YakRh8Stage)\icon.png" Condition="'$(BuildYakPackage)' == 'True'" />
     <Copy SourceFiles="$(YakIcon)" DestinationFiles="$(YakRh8Stage)\net48\icon.png" Condition="'$(BuildYakPackage)' == 'True'" />
     <Copy SourceFiles="$(YakIcon)" DestinationFiles="$(YakRh8Stage)\net8.0-windows\icon.png" Condition="'$(BuildYakPackage)' == 'True'" />
     <Copy SourceFiles="$(YakIcon)" DestinationFiles="$(YakRh7Stage)\icon.png" Condition="'$(BuildYakPackage)' == 'True'" />
