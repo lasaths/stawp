@@ -1,8 +1,8 @@
 # stawp
 
-Grasshopper solver kill switch. Adds a **Solver** toggle to the canvas toolbar (below the component ribbon) and global shortcut **`Ctrl+Shift+K`** that works even when the GH UI is frozen.
+Grasshopper solver kill switch. Adds a **Solver** toggle to the canvas toolbar (below the component ribbon) and global shortcut **`Ctrl+Alt+K`** that works even when the GH UI is frozen.
 
-Uses **K** (kill) — avoids Rhino defaults (`Ctrl+Shift+L` = Unlock Selected, `Ctrl+Alt+L` = Unlock).
+Uses **K** (kill) with **Ctrl+Alt** — avoids Rhino defaults (`Ctrl+Shift+L` = Unlock Selected) and other `Ctrl+Shift` conflicts.
 
 Windows only (Rhino 7 + 8).
 
@@ -26,10 +26,10 @@ Windows only (Rhino 7 + 8).
 | Control | Action |
 |---------|--------|
 | **Solver** toolbar button | Toggle solver on/off — Phosphor `lock-open` (green) / `lock` (grey) |
-| **`Ctrl+Shift+K`** (idle) | Lock solver, or unlock when idle-locked |
-| **`Ctrl+Shift+K`** (while solving) | **Panic stop** — reinforces lock + abort; never unlocks mid-solve |
+| **`Ctrl+Alt+K`** (idle) | Lock solver, or unlock when idle-locked |
+| **`Ctrl+Alt+K`** (while solving) | **Panic stop** — reinforces lock + abort; never unlocks mid-solve |
 
-While a solve is running (or a stop campaign is active), **`Ctrl+Shift+K` always reinforces the stop** — no debounce, mash-safe. Unlock only after the solve has finished and the solver is idle-locked.
+While a solve is running (or a stop campaign is active), **`Ctrl+Alt+K` always reinforces the stop** — no debounce, mash-safe. Unlock only after the solve has finished and the solver is idle-locked.
 
 When stopping, **stawp keeps retrying** `RequestAbortSolution()` every ~20 ms until the solution ends. A small overlay (bottom-right) shows retry count, elapsed time, active components, and a progress bar.
 
@@ -93,11 +93,11 @@ Skip yak build: `dotnet build -p:BuildYakPackage=False`
 - **Windows only** — hotkeys use Win32 APIs
 - **Cooperative abort (GH1)** — `RequestAbortSolution()` only takes effect after the current component finishes, or sooner if that component implements early abort. Native Rhino booleans, meshes, and similar ops cannot be interrupted mid-command — same ceiling as Escape.
 - **GH1 UI thread** — solver runs on the GH UI thread; stawp works around blocked UI via background hotkeys and a separate feedback thread, but cannot kill a native op already in progress.
-- **Toolbar click** — emergency path is `Ctrl+Shift+K` when canvas is frozen
+- **Toolbar click** — emergency path is `Ctrl+Alt+K` when canvas is frozen
 
 ## Manual test checklist
 
-1. **Mash test** — heavy solve running, press `Ctrl+Shift+K` rapidly → solver stays locked, abort count climbs, never unlocks mid-solve.
-2. **Unlock test** — after solve stops, single `Ctrl+Shift+K` → unlocks.
+1. **Mash test** — heavy solve running, press `Ctrl+Alt+K` rapidly → solver stays locked, abort count climbs, never unlocks mid-solve.
+2. **Unlock test** — after solve stops, single `Ctrl+Alt+K` → unlocks.
 3. **Native geom** — boolean/mesh op → overlay shows checkpoint wait; shortcut still reinforces abort.
 4. **Toolbar** — lock via button during solve; shortcut mash still reinforces (no unlock).

@@ -13,8 +13,6 @@ namespace stawp
     internal sealed class ShortcutHost : Form
     {
         private const int WmHotkey = 0x0312;
-        private const uint ModControl = 0x0002;
-        private const uint ModShift = 0x0004;
 
         private static Thread? _thread;
         private static ShortcutHost? _instance;

@@ -26,7 +26,7 @@ namespace stawp
 
         private const int VkControl = 0x11;
 
-        private const int VkShift = 0x10;
+        private const int VkAlt = 0x12;
 
 
 
@@ -404,7 +404,7 @@ namespace stawp
 
             return IsKeyDown(VkControl)
 
-                && IsKeyDown(VkShift)
+                && IsKeyDown(VkAlt)
 
                 && IsKeyDown((int)ShortcutConfig.VkKey);
 

@@ -15,7 +15,7 @@ namespace stawp
         public override Guid Id => new Guid("8f4e2b1a-9c3d-4e5f-a6b7-1c2d3e4f5a6b");
         public override string AuthorName => "lasaths";
         public override string AuthorContact => "";
-        public override string AssemblyVersion => "0.1.0";
+        public override string AssemblyVersion => "0.1.1";
     }
 
     public sealed class StawpBootstrap : GH_AssemblyPriority
