@@ -1,0 +1,90 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- McNeel Rhino.Templates grasshopper layout — Rhino 7 (net48) + Rhino 8 (net8.0-windows) -->
+    <TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <TargetExt>.gha</TargetExt>
+    <NoWarn>$(NoWarn);NU1701;NETSDK1086</NoWarn>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+
+    <AssemblyName>stawp</AssemblyName>
+    <RootNamespace>stawp</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <Version>0.1.0</Version>
+    <Title>stawp</Title>
+    <Description>Grasshopper solver kill switch — toolbar toggle and Ctrl+Shift+K emergency lock</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) or $(TargetFramework.StartsWith('net4'))">
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="icons\16\solver-on.png">
+      <LogicalName>stawp.icons.solver-on.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\16\solver-off.png">
+      <LogicalName>stawp.icons.solver-off.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\24\plugin.png">
+      <LogicalName>stawp.icons.plugin.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- Rhino 7 — net48 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="Grasshopper" Version="7.23.22282.13001" ExcludeAssets="runtime" />
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+  </ItemGroup>
+
+  <!-- Rhino 8 — .NET Core on Windows -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
+    <PackageReference Include="Grasshopper" Version="8.32.26160.13001" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="manifest.yml" />
+  </ItemGroup>
+
+  <Target Name="BuildYakPackage" AfterTargets="DispatchToInnerBuilds">
+    <PropertyGroup>
+      <YakExecutable Condition="'$(YakExecutable)' == '' and $([MSBuild]::IsOSPlatform(windows)) and Exists('C:\Program Files\Rhino 8\System\Yak.exe')">C:\Program Files\Rhino 8\System\Yak.exe</YakExecutable>
+      <BuildYakPackage Condition="'$(BuildYakPackage)' == '' and '$(YakExecutable)' != ''">True</BuildYakPackage>
+      <YakDistDir>$(MSBuildProjectDirectory)\dist</YakDistDir>
+      <YakRh8Stage>$(YakDistDir)\rh8</YakRh8Stage>
+      <YakRh7Stage>$(YakDistDir)\rh7</YakRh7Stage>
+      <YakIcon>$(MSBuildProjectDirectory)\icons\24\plugin.png</YakIcon>
+      <YakReleaseDir>$(MSBuildProjectDirectory)\bin\$(Configuration)</YakReleaseDir>
+    </PropertyGroup>
+
+    <Warning Text="Yak.exe not found — skip package build. Install Rhino 8 or set YakExecutable." Condition="'$(BuildYakPackage)' != 'True'" />
+
+    <RemoveDir Directories="$(YakRh8Stage);$(YakRh7Stage)" Condition="'$(BuildYakPackage)' == 'True'" />
+    <MakeDir Directories="$(YakRh8Stage)\net48;$(YakRh8Stage)\net8.0-windows;$(YakRh7Stage)" Condition="'$(BuildYakPackage)' == 'True'" />
+
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\manifest.yml" DestinationFolder="$(YakRh8Stage)" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\manifest.yml" DestinationFolder="$(YakRh7Stage)" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Copy SourceFiles="$(YakReleaseDir)\net48\stawp.gha" DestinationFolder="$(YakRh8Stage)\net48" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Copy SourceFiles="$(YakReleaseDir)\net8.0-windows\stawp.gha" DestinationFolder="$(YakRh8Stage)\net8.0-windows" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Copy SourceFiles="$(YakReleaseDir)\net48\stawp.gha" DestinationFolder="$(YakRh7Stage)" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Copy SourceFiles="$(YakIcon)" DestinationFiles="$(YakRh8Stage)\net48\icon.png" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Copy SourceFiles="$(YakIcon)" DestinationFiles="$(YakRh8Stage)\net8.0-windows\icon.png" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Copy SourceFiles="$(YakIcon)" DestinationFiles="$(YakRh7Stage)\icon.png" Condition="'$(BuildYakPackage)' == 'True'" />
+
+    <Exec Command="&quot;$(YakExecutable)&quot; build" WorkingDirectory="$(YakRh8Stage)" Condition="'$(BuildYakPackage)' == 'True'" />
+    <Exec Command="&quot;$(YakExecutable)&quot; build" WorkingDirectory="$(YakRh7Stage)" Condition="'$(BuildYakPackage)' == 'True'" />
+
+    <ItemGroup Condition="'$(BuildYakPackage)' == 'True'">
+      <YakArtifacts Include="$(YakRh8Stage)\*.yak;$(YakRh7Stage)\*.yak" />
+    </ItemGroup>
+    <Move SourceFiles="@(YakArtifacts)" DestinationFolder="$(YakDistDir)" Condition="'$(BuildYakPackage)' == 'True'" />
+  </Target>
+
+</Project>
