@@ -2,7 +2,7 @@
 name: stawp
 version: 0.1.0
 authors:
-  - stawp
+  - lasaths
 description: >
   Grasshopper solver kill switch — canvas toolbar toggle and Ctrl+Shift+K
   emergency lock with persistent stop feedback.

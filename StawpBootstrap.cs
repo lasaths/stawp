@@ -13,7 +13,7 @@ namespace stawp
         public override Bitmap Icon => StawpIcons.Plugin24;
         public override string Description => $"Solver kill switch — canvas toolbar toggle and {SolverService.ShortcutHint} emergency lock.";
         public override Guid Id => new Guid("8f4e2b1a-9c3d-4e5f-a6b7-1c2d3e4f5a6b");
-        public override string AuthorName => "stawp";
+        public override string AuthorName => "lasaths";
         public override string AuthorContact => "";
         public override string AssemblyVersion => "0.1.0";
     }
